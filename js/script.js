@@ -1,10 +1,26 @@
+/**
+ * @description HTML location of all upcoming lists
+ */
 let tempLocation = document.querySelector("#lists");
+/**
+ * @description HTML location of the create new list form
+ */
 let listCreation = document.querySelector("#createNewList");
+/**
+ * @description Adds eventlistener to form, thats prevents default action and runs addList() function
+ */
 listCreation.addEventListener("submit", function(event){
     event.preventDefault()
     addList(event)
 })
+/**
+ * @description first test of what will be a local storage of all lists created
+ */
 let allLists = {};
+
+/**
+ * @description TodoList is for creating and showing lists, later it will be able to remove and edit lists
+ */
 class TodoList{
 
     constructor(listName, date, description, color){
@@ -13,6 +29,13 @@ class TodoList{
         this.description = description;
         this.color = color
     }
+    /**
+     * @description a temp static method to console log out info about a TodoList.
+     * @param {Class} list  a class instance of TodoList
+     * @example 
+     * ```js
+     * //input a
+     */
     static showList(list){
         console.log(list.listName, list.date, list.description);
     }
