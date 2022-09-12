@@ -34,7 +34,11 @@ class TodoList {
    * @param {Class} list  a class instance of TodoList
    * @example
    * ```js
-   * //input a
+   * //input a todo class instance.
+   * showList(TodoClass);
+   * //output to console:
+   * `list name, 11.2.33, item1 item2 item3, my list, red`
+   * ```
    */
   static showList(list) {
     console.log(
@@ -103,18 +107,28 @@ class TodoList {
         </div>`;
     location.innerHTML += html;
   }
+  /********************************************************************************************** */
+  addToStorage() {
+    let allLists = [];
+    //test
+    if (localStorage.getItem("lists")) {
+      //skaff liste her osv
+      allLists = JSON.parse(localStorage.getItem("lists"));
+      console.log(allLists);
+    } else {
+      allLists = {
+        listOne: {
+          name: this.listName,
+          desc: this.description,
+          date: this.date,
+          listItems: this.items,
+          color: "red",
+        },
+      };
+    }
+    localStorage.setItem("lists", JSON.stringify(allLists));
+  }
 }
-
-/*let myTodo = new TodoList(
-  "Ting å gjøre",
-  "test",
-  "en liste med de tingene jeg trenger å gjøre",
-  "red");
-  console.log();
-
-myTodo.showListOpt(tempLocation);
-*/
-
 function addList(event) {
   //let fullDate = new Date().toLocaleString();
   let dateCreated = new Date().toDateString();
@@ -153,8 +167,8 @@ function addList(event) {
         " " +
         dateString +
         " " +
-        createdListItems +
-        "" +
+        formatedItems +
+        " " +
         description
     );
   }
