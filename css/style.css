@@ -1,0 +1,12 @@
+.flex{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.paddingt{
+    padding-top: 2rem;
+}
+.paddingb{
+    padding-bottom: 2rem;
+}
