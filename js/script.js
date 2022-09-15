@@ -22,9 +22,10 @@ let allLists = {};
  * @description TodoList is for creating and showing lists, later it will be able to remove and edit lists
  */
 class TodoList {
-  constructor(listName, date, items, description, color) {
+  constructor(listName, date, nonFormatedItems, items, description, color) {
     this.listName = listName;
     this.date = date;
+    this.nonFormatedItems = nonFormatedItems;
     this.items = items;
     this.description = description;
     this.color = color;
@@ -49,31 +50,34 @@ class TodoList {
       list.color
     );
   }
-  static formatMapToString(map) {
+  static formatObjToString(items) {
     let string = "";
-    for (let i = 1; i <= map.size; i++) {
-      string += `<li>${map.get(i)}</li>`;
+    let obj = Object.entries(items);
+    let objLength = obj.length;
+    for (let i = 0; i < objLength; i++) {
+      string += `<li>${items[i]} </li>`;
     }
+    console.log(string);
     return string;
   }
   /**
-   * @description this method is used to convert html values to content in an Map that will later be stored and used.
+   * @description this method is used to convert html values to content in an object that will later be stored and used.
    * @param {object} location location of list items wanted added by user
-   * @returns a Map with all true values
+   * @returns a object with all true values
    * @example
    * ```js
    * //give the location of the html content
    * addHtmlToArray(targetDiv);
-   * //array / map / set will be added with the values that are not false.
+   * //array / object / set will be added with the values that are not false.
    * ```
    */
   static addHtmlToArray(location) {
-    let allContent = new Map();
-    let x = 1;
+    let allContent = {};
+    let x = 0;
     for (let i = 0; i < location.length; i++) {
       if (location[i].value) {
         console.log(location[i].value);
-        allContent.set(x, location[i].value);
+        allContent[`${x}`] = location[i].value;
         x++;
       }
     }
@@ -108,26 +112,59 @@ class TodoList {
     location.innerHTML += html;
   }
   /********************************************************************************************** */
-  addToStorage() {
-    let allLists = [];
-    //test
-    if (localStorage.getItem("lists")) {
-      //skaff liste her osv
-      allLists = JSON.parse(localStorage.getItem("lists"));
-      console.log(allLists);
-    } else {
-      allLists = {
-        listOne: {
-          name: this.listName,
-          desc: this.description,
-          date: this.date,
-          listItems: this.items,
-          color: "red",
-        },
-      };
+
+  //get storage
+  static getStorage(targetedList) {
+    if (this.checkStorage(targetedList)) {
+      let listFromStorage = JSON.parse(localStorage.getItem(targetedList));
+      return listFromStorage;
     }
-    localStorage.setItem("lists", JSON.stringify(allLists));
   }
+  // check storage
+  static checkStorage(target) {
+    if (localStorage.getItem(target)) {
+      return true;
+    }
+  }
+  //add to storage
+  addToStorage() {
+    let storage = TodoList.getStorage("lists");
+    console.log(storage);
+    storage[`${this.listName}`] = {
+      name: this.listName,
+      date: this.date,
+      nonFormatedItems: this.nonFormatedItems,
+      formatedItems: this.items,
+      description: this.description,
+      color: this.color,
+    };
+    console.log(storage);
+    localStorage.setItem("lists", JSON.stringify(storage));
+    //trenger å få navnet på listen.... done?
+  }
+  static createStorage() {
+    let allLists = {};
+    let stringedAllLists = JSON.stringify(allLists);
+    localStorage.setItem("lists", stringedAllLists);
+  }
+  static loadListsFromStorage() {
+    let storage = TodoList.getStorage("lists");
+    let arrayofStorage = Object.entries(storage);
+    console.log(arrayofStorage);
+    arrayofStorage.forEach((item) => {
+      console.log(item);
+      let todoList = new TodoList(
+        item[1]["name"],
+        item[1]["date"],
+        item[1]["nonFormatedItems"],
+        item[1]["formatedItems"],
+        item[1]["description"],
+        item[1]["color"]
+      );
+      todoList.showListOpt(tempLocation);
+    });
+  }
+  //listOne: { name: "bendik", desc: "something", time: "this" },
 }
 function addList(event) {
   //let fullDate = new Date().toLocaleString();
@@ -141,7 +178,7 @@ function addList(event) {
   //adds html content to map
   let createdListItems = TodoList.addHtmlToArray(allListItems);
   //creates a formated list from the map
-  let formatedItems = TodoList.formatMapToString(createdListItems);
+  let formatedItems = TodoList.formatObjToString(createdListItems);
   //console.log(t.listItems.children);
 
   //console.log(t.name);
@@ -153,23 +190,22 @@ function addList(event) {
     if (!description) {
       description = "no description";
     }
+
+    //creation of the list
     let testTo = new TodoList(
       name,
       dateString,
+      createdListItems,
       formatedItems,
       description,
       "red"
     );
     testTo.showListOpt(tempLocation);
-    console.log(
-      "list is created, with these values: " +
-        name +
-        " " +
-        dateString +
-        " " +
-        formatedItems +
-        " " +
-        description
-    );
+    if (!TodoList.getStorage("lists")) {
+      TodoList.createStorage();
+      console.log("ingen lists finnes, lager.....");
+    }
+    testTo.addToStorage();
   }
 }
+document.addEventListener(`DOMContentLoaded`, TodoList.loadListsFromStorage);
