@@ -1,3 +1,6 @@
+body{
+    margin: 0;
+}
 .flex{
     display: flex;
     flex-direction: column;
@@ -23,6 +26,8 @@
     flex-direction: column;
     align-content: center;
     justify-content: center;
+    max-width: 250px;
+    
 }
 .todoList h2{
     margin-left: 0;
@@ -34,13 +39,25 @@
 }
 .todoList ul{
     width: 60%;
-    padding:2rem;
+    padding:1rem 2rem;
     color: white;     
     border-radius: 20px;  
     margin-top: 5px;
 }
 .todoList ul li{
+    margin: 10px 0px 10px 0px;
 }
 .red{
     background-color: red;
+}
+header{
+    
+    display:  flex;
+    justify-content: center;
+    width: 100%;
+}
+header img{
+}
+.title{
+    text-align: center;
 }

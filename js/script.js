@@ -198,9 +198,11 @@ function addList(event) {
   //let fullDate = new Date().toLocaleString();
   let dateCreated = new Date().toDateString();
   console.log(dateCreated)
-  let hourCreated = new Date().getHours();
-  let minuteCreated = new Date().getMinutes();
-  let dateString = `created on ${dateCreated.slice(4,)}, at ${hourCreated}:${minuteCreated}`;
+  //temp removed hour and minutes
+  //let hourCreated = new Date().getHours();
+  //let minuteCreated = new Date().getMinutes();
+  //, at ${hourCreated}:${minuteCreated}
+  let dateString = `created on ${dateCreated.slice(4,)}.`;
   let t = event.target.children;
   //path to list items
   let allListItems = t.listItems.children;
