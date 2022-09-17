@@ -10,3 +10,37 @@
 .paddingb{
     padding-bottom: 2rem;
 }
+
+#lists{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    column-gap: 2rem;
+}
+
+.todoList{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+}
+.todoList h2{
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 4px;
+    padding-bottom: 0px;
+    width: 70%;
+    
+}
+.todoList ul{
+    width: 60%;
+    padding:2rem;
+    color: white;     
+    border-radius: 20px;  
+    margin-top: 5px;
+}
+.todoList ul li{
+}
+.red{
+    background-color: red;
+}

@@ -6,6 +6,11 @@ let tempLocation = document.querySelector("#lists");
  * @description HTML location of the create new list form
  */
 let listCreation = document.querySelector("#createNewList");
+let removeBtn = document.querySelector("#removeAll");
+removeBtn.addEventListener("click", () => {
+  TodoList.clearAllLists();
+  TodoList.loadListsFromStorage();
+})
 /**
  * @description Adds eventlistener to form, thats prevents default action and runs addList() function
  */
@@ -104,9 +109,9 @@ class TodoList {
    */
   showListOpt(location) {
     let html = `
-        <div class="todoList ${this.color}"> 
+        <div class="todoList"> 
             <h2>${this.listName}</h2>
-            <ul> ${this.items} </ul>
+            <ul class=" ${this.color}"> ${this.items} </ul>
             <p>${this.date}</p>
         </div>`;
     location.innerHTML += html;
@@ -149,29 +154,53 @@ class TodoList {
   }
   static loadListsFromStorage() {
     let storage = TodoList.getStorage("lists");
-    let arrayofStorage = Object.entries(storage);
-    console.log(arrayofStorage);
-    arrayofStorage.forEach((item) => {
-      console.log(item);
-      let todoList = new TodoList(
-        item[1]["name"],
-        item[1]["date"],
-        item[1]["nonFormatedItems"],
-        item[1]["formatedItems"],
-        item[1]["description"],
-        item[1]["color"]
-      );
-      todoList.showListOpt(tempLocation);
-    });
+    if(storage){
+      let arrayofStorage = Object.entries(storage);
+      console.log(arrayofStorage);
+      arrayofStorage.forEach((item) => {
+        console.log(item);
+        let todoList = new TodoList(
+          item[1]["name"],
+          item[1]["date"],
+          item[1]["nonFormatedItems"],
+          item[1]["formatedItems"],
+          item[1]["description"],
+          item[1]["color"]
+        );
+        todoList.showListOpt(tempLocation);
+      })
+    }
+    else{
+      tempLocation.innerHTML = "";
+    }
   }
+  static clearAllLists(){
+    //removes all lists
+    localStorage.setItem("lists", "");
+  }
+  clearList(){
+    let lists = Todo.getStorage("lists");
+    console.log(lists);
+  }
+  static onLoad(){
+    if(!TodoList.checkStorage("lists")){
+      TodoList.createStorage();
+    }
+    else{
+      TodoList.loadListsFromStorage();
+    }
+
+  }
+
   //listOne: { name: "bendik", desc: "something", time: "this" },
 }
 function addList(event) {
   //let fullDate = new Date().toLocaleString();
   let dateCreated = new Date().toDateString();
+  console.log(dateCreated)
   let hourCreated = new Date().getHours();
   let minuteCreated = new Date().getMinutes();
-  let dateString = `created on ${dateCreated}, at ${hourCreated}:${minuteCreated}`;
+  let dateString = `created on ${dateCreated.slice(4,)}, at ${hourCreated}:${minuteCreated}`;
   let t = event.target.children;
   //path to list items
   let allListItems = t.listItems.children;
@@ -208,4 +237,5 @@ function addList(event) {
     testTo.addToStorage();
   }
 }
-document.addEventListener(`DOMContentLoaded`, TodoList.loadListsFromStorage);
+
+document.addEventListener(`DOMContentLoaded`, TodoList.onLoad);
